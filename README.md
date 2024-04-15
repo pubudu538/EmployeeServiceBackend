@@ -35,7 +35,7 @@ If you wish to build multi-arch images for arm64 and amd64, you can use Docker B
 Note: Docker Buildx is included in Docker 19.03 and later versions. You can check if Buildx is available by running 
 
 ```bash
-docker buildx version.
+docker buildx version
 ```
 
 Then run the following commands. 
