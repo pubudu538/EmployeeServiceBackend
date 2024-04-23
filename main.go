@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -68,7 +69,12 @@ func deleteEmployee(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/employee", func(w http.ResponseWriter, r *http.Request) {
+	// Create ServeMux instances for port 80 and port 8080
+	mux80 := http.NewServeMux()
+	mux8080 := http.NewServeMux()
+
+	// Handlers for port 80
+	mux80.HandleFunc("/employee", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
 			getEmployees(w, r)
@@ -78,7 +84,7 @@ func main() {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	})
-	http.HandleFunc("/employee/", func(w http.ResponseWriter, r *http.Request) {
+	mux80.HandleFunc("/employee/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "PUT":
 			editEmployee(w, r)
@@ -88,5 +94,41 @@ func main() {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	})
-	http.ListenAndServe(":80", nil)
+
+	// Handlers for port 8080
+	mux8080.HandleFunc("/employee", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			getEmployeesV2(w, r)
+		case "POST":
+			addEmployeeV2(w, r)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+	mux8080.HandleFunc("/employee/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "PUT":
+			editEmployeeV2(w, r)
+		case "DELETE":
+			deleteEmployeeV2(w, r)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+
+	// Run HTTP servers on ports 80 and 8080 concurrently
+	go func() {
+		if err := http.ListenAndServe(":80", mux80); err != nil {
+			log.Fatalf("Server on port 80 failed to start: %v", err)
+		}
+	}()
+	go func() {
+		if err := http.ListenAndServe(":8080", mux8080); err != nil {
+			log.Fatalf("Server on port 8080 failed to start: %v", err)
+		}
+	}()
+
+	// Wait indefinitely
+	select {}
 }
