@@ -1,0 +1,131 @@
+---
+kind: "API"
+apiVersion: "dp.wso2.com/v1alpha2"
+metadata:
+  name: "b5e6bff9a0eb91e636566bae2371995b1917bc3f"
+  labels:
+    api-name: "5c296e241ef56a5a40aaa473bfd2613954c9446d"
+    api-version: "a851fa35562402d48e7512d6f8b0063fb149e035"
+    organization: "7505d64a54e061b7acd54ccd58b49dc43500b635"
+    managed-by: "apk"
+spec:
+  apiName: "EmployeeServiceAPI"
+  apiType: "REST"
+  apiVersion: "v1.0"
+  basePath: "/emp-info/v1.0"
+  organization: "default"
+  isDefaultVersion: false
+  definitionFileRef: "b5e6bff9a0eb91e636566bae2371995b1917bc3f-definition"
+  production:
+  - routeRefs:
+    - "b5e6bff9a0eb91e636566bae2371995b1917bc3f-production-httproute-1"
+  sandbox: null
+  apiProperties: []
+status: null
+---
+apiVersion: "gateway.networking.k8s.io/v1beta1"
+kind: "HTTPRoute"
+metadata:
+  name: "b5e6bff9a0eb91e636566bae2371995b1917bc3f-production-httproute-1"
+  labels:
+    api-name: "5c296e241ef56a5a40aaa473bfd2613954c9446d"
+    api-version: "a851fa35562402d48e7512d6f8b0063fb149e035"
+    organization: "7505d64a54e061b7acd54ccd58b49dc43500b635"
+    managed-by: "apk"
+spec:
+  hostnames:
+  - "default.gw.wso2.com"
+  rules:
+  - matches:
+    - path:
+        type: "RegularExpression"
+        value: "/employee"
+      method: "GET"
+    filters:
+    - type: "URLRewrite"
+      urlRewrite:
+        path:
+          type: "ReplaceFullPath"
+          replaceFullPath: "/employee"
+    backendRefs:
+    - group: "dp.wso2.com"
+      kind: "Backend"
+      name: "backend-e198ed1d6dbfc61d0b38a509e949e1e5f96ebe38-api"
+  - matches:
+    - path:
+        type: "RegularExpression"
+        value: "/employee"
+      method: "POST"
+    filters:
+    - type: "URLRewrite"
+      urlRewrite:
+        path:
+          type: "ReplaceFullPath"
+          replaceFullPath: "/employee"
+    backendRefs:
+    - group: "dp.wso2.com"
+      kind: "Backend"
+      name: "backend-e198ed1d6dbfc61d0b38a509e949e1e5f96ebe38-api"
+  - matches:
+    - path:
+        type: "RegularExpression"
+        value: "/employee/(.*)"
+      method: "PUT"
+    filters:
+    - type: "URLRewrite"
+      urlRewrite:
+        path:
+          type: "ReplaceFullPath"
+          replaceFullPath: "/employee/\\1"
+    backendRefs:
+    - group: "dp.wso2.com"
+      kind: "Backend"
+      name: "backend-e198ed1d6dbfc61d0b38a509e949e1e5f96ebe38-api"
+  - matches:
+    - path:
+        type: "RegularExpression"
+        value: "/employee/(.*)"
+      method: "DELETE"
+    filters:
+    - type: "URLRewrite"
+      urlRewrite:
+        path:
+          type: "ReplaceFullPath"
+          replaceFullPath: "/employee/\\1"
+    backendRefs:
+    - group: "dp.wso2.com"
+      kind: "Backend"
+      name: "backend-e198ed1d6dbfc61d0b38a509e949e1e5f96ebe38-api"
+  parentRefs:
+  - group: "gateway.networking.k8s.io"
+    kind: "Gateway"
+    name: "wso2-apk-default"
+    sectionName: "httpslistener"
+---
+apiVersion: "dp.wso2.com/v1alpha1"
+kind: "Backend"
+metadata:
+  name: "backend-e198ed1d6dbfc61d0b38a509e949e1e5f96ebe38-api"
+  labels:
+    api-name: "5c296e241ef56a5a40aaa473bfd2613954c9446d"
+    api-version: "a851fa35562402d48e7512d6f8b0063fb149e035"
+    organization: "7505d64a54e061b7acd54ccd58b49dc43500b635"
+    managed-by: "apk"
+spec:
+  services:
+  - host: "employee-service-semver"
+    port: 80
+  basePath: ""
+  protocol: "http"
+---
+kind: "ConfigMap"
+apiVersion: "v1"
+metadata:
+  name: "b5e6bff9a0eb91e636566bae2371995b1917bc3f-definition"
+  labels:
+    api-name: "5c296e241ef56a5a40aaa473bfd2613954c9446d"
+    api-version: "a851fa35562402d48e7512d6f8b0063fb149e035"
+    organization: "7505d64a54e061b7acd54ccd58b49dc43500b635"
+    managed-by: "apk"
+binaryData:
+  definition: "H4sIAAAAAAAA/+1VwW7bMAz9lUDbqdjiNL0MuW1ADwF2GBb0NPSgWEyiQrZUic7mBf73kVTspG3QdVl3my+WTfKR75Gmd8oHqHWwaqauxpPxpXo3UrZeeTXbKbTogAzXVXC+BVhA3NoSPn6Zs9cWYrK+Jvv2cjxRHb1K5EBv1ezbTjXRkWmDGGZFAXuE9ylD0L0iz9mHCSMZSGW0ATPaQkBGN18/q+5WQMsmWmwF1cBKNw7pfCvGoHGTuNYhBT+sAaV+veZa1JC99DVG7xxExcFEPWrOOjeUl4J6okkJdNQVYM+npgfysiYrRMf7BmLLTxHuGxuBQDA2wCVjK8KtfKzYAX4QroGDvdxApaXENrBjwmjrteqEU4QUfJ1AeE0nE749lGivwqj35BzMDWrhrUNwthRmxV3iiN3TlDpGLdVbhEpSvY2wIsObovQVwRJYKnJYKnplqES+nm0LW4NPZ7RAGzMk2usKCT950zLWixm+mMhriH1RXJyZ/TcqsnmY6mLXn+am4yyhOUNfMBaPBT494odMw6jzZ/bspCdLQfBg1lfapZPDbkm7NdVHNv5ANOZ3V9PXmv9/1hLZVY4E+3Ppc9x/8f/ie+gkUY9xSCLH66P1v6fql3dQokgduRloMyuSmFvyZPmSY27CKQtpYNe1zhqcckja6dge2eqmWj4S2vhm6YbV03NdMItc2sD4QEI3uJkKivPfxYm7bUubFyFZfbQ/pbCb4Zeb6J+LtDrHpJeSMSABODiv7+4XUDswbPcHAAA="
